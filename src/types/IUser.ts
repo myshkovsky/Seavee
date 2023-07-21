@@ -14,8 +14,7 @@ interface IUserWorkExperienceEntry {
 }
 
 export interface IUserBasicInfo {
-  firstname?: string,
-  lastname?: string,
+  fullname?: string,
   email?: string,
   phone?: string,
   location?: string

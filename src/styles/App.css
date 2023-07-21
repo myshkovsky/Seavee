@@ -1,0 +1,8 @@
+/* Ant.design overrides */
+.ant-card .ant-card-head {
+    border-bottom: 1px solid #858585;
+}
+
+.wrapper {
+    border: 2px dotted black;
+}

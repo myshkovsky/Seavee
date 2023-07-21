@@ -2,9 +2,7 @@ import { IUser } from "../types/IUser";
 
 const defaultUser: IUser = {
   info: {
-    firstname: 'John',
-    lastname: 'Doe',
-    
+    fullname: 'John Doe'
   },
   education: [
     {

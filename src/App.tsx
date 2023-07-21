@@ -1,48 +1,65 @@
 import { useState } from 'react'
-import Education from './components/Education'
-import WorkExperience from './components/WorkExperience'
 import defaultUser from './utils/defaultUser'
-import './styles/App.css'
-import Input from './components/Input'
 import Debug from './components/Debug'
+import './styles/App.css'
+import { Card, Form, Input } from 'antd'
 
 function App() {
   const [user, setUser] = useState(defaultUser)
 
-  function handleChange(propName: string, newValue: string) {
-    switch(propName) {
-      case 'firstname':
-        setUser({ ...user, info: { ...user.info, firstname: newValue }})
-        break
-      case 'lastname':
-        setUser({ ...user, info: { ...user.info, lastname: newValue }})
-        break
-      case 'phone':
-        setUser({ ...user, info: { ...user.info, phone: newValue }})
-        break
-      case 'location':
-        setUser({ ...user, info: { ...user.info, location: newValue }})
-        break
-      case 'email':
-        setUser({ ...user, info: { ...user.info, email: newValue }})
-        break
-      default:
-        console.error('Invalid propName')
-        break
-    }
+  function handleInfoChange(targetProp: string, newValue: string) {
+    setUser({...user, info: { ...user.info, [targetProp]: newValue }})
   }
 
   return (
     <article>
       <Debug user={user}/>
-      <div className='form'>
-
-      </div>
-      <div className='basic-info'>
-        <Input label="First name:" type="text" id="firstname" writable={newValue => handleChange('firstname', newValue as string)} value={user.info.firstname} />
-      </div>
-      <Education/>
-      <WorkExperience/>
+      <Card title="Information" style={{ maxWidth: 400, textAlign: 'center', border: '1px solid #858585' }}>
+        <Form
+          labelCol={{ span: 8 }}
+          layout='horizontal'
+        >
+          <Form.Item
+            name='fullname'
+            label='Full name:'
+            style={{ marginBottom: "1em" }}
+          >
+            <Input defaultValue={user.info.fullname} onChange={e => handleInfoChange('fullname', e.target.value)}/>
+          </Form.Item>
+          <Form.Item
+            name="email"
+            label="E-mail:"
+            style={{ marginBottom: "1em" }}
+            rules={[
+              {
+                type: 'email',
+                message: 'Please enter a valid e-mail address.'
+              },
+              {
+                required: true,
+                message: 'You must enter a valid e-mail address.'
+              }
+            ]}
+          >
+            <Input defaultValue={user.info.email} onChange={e => handleInfoChange('email', e.target.value)}/>
+          </Form.Item>
+          <Form.Item
+            name="phone"
+            label='Phone number:'
+            style={{ marginBottom: "1em" }}
+            rules={[{ required: true, message: 'You must enter a phone number.' }]}
+          >
+            <Input defaultValue={user.info.phone} onChange={e => handleInfoChange('phone', e.target.value)}/>
+          </Form.Item>
+          <Form.Item
+            name="location"
+            label='Location:'
+            style={{ marginBottom: 0 }}
+          >
+            <Input defaultValue={user.info.location} onChange={e => handleInfoChange('location', e.target.value)}/>
+          </Form.Item>
+        </Form>
+      </Card>
     </article>
   )
 }
