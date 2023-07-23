@@ -1,4 +1,4 @@
-import { IUser } from "../types/IUser";
+import { EnumDegrees, IUser } from "../types/IUser";
 
 const defaultUser: IUser = {
   info: {
@@ -8,7 +8,7 @@ const defaultUser: IUser = {
     {
       school: "Harvard University",
       major: "Computer Science",
-      degree: "PhD",
+      degree: EnumDegrees.doctorate,
       started: new Date(),
     }
   ],
@@ -19,6 +19,6 @@ const defaultUser: IUser = {
       started: new Date(),
     }
   ]
-} as IUser
+}
 
 export default defaultUser

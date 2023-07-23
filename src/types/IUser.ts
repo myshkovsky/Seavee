@@ -1,7 +1,15 @@
+export enum EnumDegrees {
+  none = "No degree",
+  associate = "Associate",
+  bachelors = "Bachelor's",
+  masters = "Master's",
+  doctorate = "Doctorate"
+}
+
 interface IUserEducationEntry {
   school: string,
   major: string,
-  degree: string,
+  degree: EnumDegrees,
   started: Date,
   ended?: Date
 }

@@ -3,6 +3,25 @@
     border-bottom: 1px solid #858585;
 }
 
-.wrapper {
-    border: 2px dotted black;
+.ant-card {
+    max-width: 450px;
+    text-align: center;
+    border: 1px solid #858585;
+    margin-bottom: 1rem;
+}
+
+.ant-form {
+    text-align: left;
+}
+
+.ant-form-item {
+    margin-bottom: 1rem;
+}
+
+.ant-form-item:last-child {
+    margin-bottom: 0px;
+}
+
+.ant-btn {
+    min-width: 7rem;
 }
