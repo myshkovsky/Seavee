@@ -3,27 +3,44 @@ import defaultUser from './utils/defaultUser'
 import Debug from './components/Debug'
 import './styles/App.css'
 import { Button, Card, ConfigProvider, DatePicker, Form, Input, Select, Space } from 'antd'
-import { IUserBasicInfo } from './types/IUser'
+import { EnumDegrees, TEnumDegrees } from './types/IUser'
 
 function App() {
+  const [infoDisable, setInfoDisable] = useState(false)
   const [user, setUser] = useState(defaultUser)
-  
-  const [eduForm] = Form.useForm<IUserBasicInfo>()
+  const [infoForm] = Form.useForm()
+  const [eduForm] = Form.useForm()
   const { RangePicker } = DatePicker
   
+  function toggleInfoEdit() {
+    setInfoDisable(!infoDisable)
+  }
+
   function handleInfoChange(targetProp: string, newValue: string) {
     setUser({...user, info: { ...user.info, [targetProp]: newValue }})
   }
 
   function handleEduClear() {
-
+    eduForm.resetFields()
   }
 
-  function eduFormSubmit(values: unknown) {
-    console.log(values)
+  function handleInfoClear() {
+    infoForm.resetFields()
   }
 
-  //TODO: Use <ConfigProvider> to get rid of the same style for every form item
+  function handleEduSubmit(rawValues: {school: string, major: string, degree: TEnumDegrees, range: [{"$d": Date}?, {"$d": Date}?]}) {
+    const degreeKey: TEnumDegrees = rawValues?.degree
+    const newEntry = {
+      school: rawValues.school as string,
+      major: rawValues.major as string,
+      degree: EnumDegrees[degreeKey],
+      started: (rawValues.range[0] != undefined ? rawValues.range[0]["$d"] : undefined),
+      ended: (rawValues.range[1] != undefined ? rawValues.range[1]["$d"] : undefined)
+    }
+    setUser({...user, education: [...user.education, newEntry]})
+    handleEduClear()
+  }
+
   const theme = {
     "token": {
       "colorPrimary": "#6c48c5",
@@ -37,13 +54,17 @@ function App() {
       <article className='main-wrapper'>
         <Debug user={user}/>
         <Card title="Information">
-          <Form labelCol={{ span: 5 }} layout='horizontal'>
-            <Form.Item name='fullname' label='Full name:'>
-              <Input defaultValue={user.info.fullname} onChange={e => handleInfoChange('fullname', e.target.value)}/>
+          <Form form={infoForm} labelCol={{ span: 5 }} layout='horizontal' disabled={infoDisable}>
+            <Form.Item name='fullname' label='Full name:' initialValue={user.info.fullname}>
+              <Input onChange={e => handleInfoChange('fullname', e.target.value)}/>
+            </Form.Item>
+            <Form.Item name='title' label='Title:' initialValue={user.info.title}>
+              <Input onChange={e => handleInfoChange('title', e.target.value)}/>
             </Form.Item>
             <Form.Item
               name="email"
               label="E-mail:"
+              initialValue={user.info.email}
               rules={[
                 {
                   type: 'email',
@@ -55,22 +76,28 @@ function App() {
                 }
               ]}
             >
-              <Input defaultValue={user.info.email} onChange={e => handleInfoChange('email', e.target.value)}/>
+              <Input onChange={e => handleInfoChange('email', e.target.value)}/>
             </Form.Item>
             <Form.Item
               name="phone"
               label='Phone:'
+              initialValue={user.info.phone}
               rules={[{ required: true, message: 'You must enter a phone number.' }]}
             >
               <Input defaultValue={user.info.phone} onChange={e => handleInfoChange('phone', e.target.value)}/>
             </Form.Item>
-            <Form.Item name="location" label='Location:'>
-              <Input defaultValue={user.info.location} onChange={e => handleInfoChange('location', e.target.value)}/>
+            <Form.Item name="location" label='Location:' initialValue={user.info.location}>
+              <Input onChange={e => handleInfoChange('location', e.target.value)}/>
             </Form.Item>
             <Form.Item style={{ textAlign: 'center' }}>
-              <Button>
-                Toggle edit mode
-              </Button>
+              <Space>
+                <Button type='primary' disabled={false} onClick={toggleInfoEdit}>
+                  Edit
+                </Button>
+                <Button disabled={false} onClick={handleInfoClear}>
+                  Clear
+                </Button>
+              </Space>
             </Form.Item>
           </Form>
         </Card>
@@ -79,7 +106,7 @@ function App() {
             labelCol={{ span: 5 }}
             layout='horizontal'
             form={eduForm}
-            onFinish={eduFormSubmit}
+            onFinish={handleEduSubmit}
           >
             <Form.Item name="school" label='School:'>
               <Input placeholder='Harvard University'/>

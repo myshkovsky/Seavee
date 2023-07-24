@@ -6,11 +6,14 @@ export enum EnumDegrees {
   doctorate = "Doctorate"
 }
 
-interface IUserEducationEntry {
+export type TEnumDegrees = "none"|"associate"|"bachelors"|"masters"|"doctorate"
+
+
+export interface IUserEducationEntry {
   school: string,
   major: string,
   degree: EnumDegrees,
-  started: Date,
+  started?: Date,
   ended?: Date
 }
 
@@ -23,6 +26,7 @@ interface IUserWorkExperienceEntry {
 
 export interface IUserBasicInfo {
   fullname?: string,
+  title?: string,
   email?: string,
   phone?: string,
   location?: string
