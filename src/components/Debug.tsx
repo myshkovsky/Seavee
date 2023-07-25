@@ -3,9 +3,9 @@ import { IUser } from "../types/IUser";
 function Debug(props: { user: IUser }) {
   return (
     <>
-      <p>
+      <div style={{ maxWidth: 400, overflow: 'scroll' }}>
         {JSON.stringify(props.user)}
-      </p>
+      </div>
     </>
   )
 }
