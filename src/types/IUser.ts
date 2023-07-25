@@ -10,18 +10,23 @@ export type TEnumDegrees = "none"|"associate"|"bachelors"|"masters"|"doctorate"
 
 
 export interface IUserEducationEntry {
+  uuid: string,
   school: string,
   major: string,
   degree: EnumDegrees,
-  started?: Date,
+  current: boolean,
+  started: Date,
   ended?: Date
 }
 
 interface IUserWorkExperienceEntry {
+  uuid: string,
   title: string,
   company: string,
+  current: boolean,
   started: Date,
-  ended?: Date
+  ended?: Date,
+  description?: string
 }
 
 export interface IUserBasicInfo {
@@ -30,6 +35,7 @@ export interface IUserBasicInfo {
   email?: string,
   phone?: string,
   location?: string
+  description?: string,
 }
 
 export interface IUserEducation extends Array<IUserEducationEntry>{}
