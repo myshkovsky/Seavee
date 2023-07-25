@@ -1,3 +1,6 @@
+/* Imports */
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
 /* Ant.design overrides */
 .ant-card .ant-card-head {
     border-bottom: 1px solid #858585;
@@ -24,4 +27,29 @@
 
 .ant-btn {
     min-width: 7rem;
+}
+
+/* Layout */
+.main-wrapper {
+    display: flex;
+    justify-content: space-between;
+}
+
+.display {
+    font-family: 'Poppins', sans-serif;
+    float: right;
+    margin-left: auto;
+    width: 210mm;
+    height: auto;
+    line-height: 1.3em;
+}
+
+.title {
+    margin-top: 0;
+    margin-bottom: .5em;
+}
+
+ul {
+    list-style: none;
+    padding: none;
 }
