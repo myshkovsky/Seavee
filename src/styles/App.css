@@ -41,6 +41,7 @@
     margin-left: auto;
     width: 210mm;
     height: auto;
+    display: inline;
 }
 
 .title {
