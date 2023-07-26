@@ -19,7 +19,7 @@ export interface IUserEducationEntry {
   ended?: Date
 }
 
-interface IUserWorkExperienceEntry {
+export interface IUserWorkExperienceEntry {
   uuid: string,
   title: string,
   company: string,
