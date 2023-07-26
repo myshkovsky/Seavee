@@ -30,7 +30,7 @@ export interface IUserWorkExperienceEntry {
 }
 
 export interface IUserBasicInfo {
-  fullname?: string,
+  fullname: string,
   title?: string,
   email?: string,
   phone?: string,
