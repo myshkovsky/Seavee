@@ -8,7 +8,7 @@ const defaultUser: IUser = {
     email: 'JohnDoe@gmail.com',
     phone: '+1 111-222-333',
     location: 'Poland, OH',
-    description: 'I am a Software Engineer of 10 years and mainly work with back-end solutions built with C++.'
+    description: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quo praesentium sapiente molestias quam unde illo vitae id impedit necessitatibus quae? Asperiores praesentium ex modi eligendi mollitia quod doloribus dolor omnis."
   },
   education: [
     {
@@ -28,7 +28,7 @@ const defaultUser: IUser = {
       company: 'John Doe Softworks',
       current: true,
       started: new Date(),
-      description: 'Doing stuff and things with more stuff and things :)'
+      description: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quo praesentium sapiente molestias quam unde illo vitae id impedit necessitatibus quae? Asperiores praesentium ex modi eligendi mollitia quod doloribus dolor omnis."
     }
   ]
 }
