@@ -1,5 +1,6 @@
 import { EnumDegrees, IUserEducation } from "../types/IUser";
 import dateToString from "../utils/dateToString";
+import { purple } from "@ant-design/colors"
 interface IEducation {
   education: IUserEducation
 }
@@ -17,17 +18,18 @@ function WorkPreview({ education }: IEducation) {
   return (
     <ul>
       {education.map(e => (
-        <li key={e.uuid}>
-          <span style={{ display: "flex" }}>
-            <div>
-              <h2 className="title ">
-                {formatDegreeForDisplay(e.degree, e.major)}
-              </h2>
-              <h3 className="subtitle work-company">
-                {dateToString(e.started)} - {e.ended ? dateToString(e.ended) : "Current"} | {e.school}
-              </h3>
-            </div>
-          </span>
+        <li key={e.uuid} className="list-grid">
+          <div className="timespan">
+            {dateToString(e.started)} - {e.ended ? dateToString(e.ended) : "Current"}
+          </div>
+          <div>
+            <h2 className="title">
+              {formatDegreeForDisplay(e.degree, e.major)}
+            </h2>
+            <h3 className="subtitle" style={{ color: purple[6] }}>
+              {e.school}
+            </h3>
+          </div>
         </li>
       ))}
     </ul>
