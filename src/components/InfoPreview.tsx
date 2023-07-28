@@ -1,7 +1,7 @@
 import { IUserBasicInfo } from "../types/IUser"
 import { PhoneTwoTone, MailTwoTone, HomeTwoTone } from "@ant-design/icons"
 import { purple } from "@ant-design/colors"
-import '../styles/InfoPreview.css'
+import '../styles/Previews.css'
 
 interface IInfo {
   info: IUserBasicInfo

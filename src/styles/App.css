@@ -35,6 +35,10 @@
     justify-content: space-between;
 }
 
+.editor {
+    min-width: 450px;
+}
+
 .display {
     font-family: 'Poppins', sans-serif;
     float: right;
@@ -42,43 +46,4 @@
     width: 210mm;
     height: auto;
     display: inline;
-}
-
-.title {
-    grid-area: title-subtitle;
-    margin: 0 .5rem 0 0;
-}
-
-.subtitle {
-    grid-area: title-subtitle;
-    margin: 0 0 .5rem 0;
-    font-weight: 100;
-    font-size: 1em;
-}
-
-.timespan {
-    grid-area: timespan;
-    margin-top: .4rem;
-    font-size: .75em;
-    text-align: center;
-}
-
-.description {
-    grid-area: description;
-}
-
-.editor {
-    min-width: 450px;
-}
-
-.list-grid {
-    display: grid;
-    grid-template: 
-        "timespan title-subtitle" auto
-        "timespan description" auto / 150px auto;
-}
-
-ul {
-    list-style: none;
-    padding: 0;
 }

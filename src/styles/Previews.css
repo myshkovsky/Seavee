@@ -1,0 +1,65 @@
+/* EducationPreview, WorkPreview */
+.title {
+    grid-area: title-subtitle;
+    margin: 0 .5rem 0 0;
+}
+
+.subtitle {
+    grid-area: title-subtitle;
+    margin: 0 0 .5rem 0;
+    font-weight: 100;
+    font-size: 1em;
+}
+
+.timespan {
+    grid-area: timespan;
+    margin-top: .4rem;
+    font-size: .75em;
+    text-align: center;
+}
+
+.description {
+    grid-area: description;
+}
+
+.list-grid {
+    display: grid;
+    grid-template: 
+        "timespan title-subtitle" auto
+        "timespan description" auto / 150px auto;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+/* InfoPreview */
+.info-box-wrapper {
+    display: flex;
+    justify-content: space-between;
+    margin: 1rem 1rem;
+}
+
+.info-box-name-title {
+    margin: 0;
+    text-align: left;
+}
+
+.info-box-name-title :nth-child(n+1) {
+    margin: 0;
+}
+
+.info-box-contact {
+    margin: 0;
+    text-align: right;
+}
+
+.info-box-contact :nth-child(n+1) {
+    margin: 0;
+}
+
+.info-box-description {
+    margin: 0 1rem;
+    font-style: italic;
+}

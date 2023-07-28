@@ -1,6 +1,8 @@
 import { EnumDegrees, IUserEducation } from "../types/IUser";
 import dateToString from "../utils/dateToString";
 import { purple } from "@ant-design/colors"
+import '../styles/Previews.css'
+
 interface IEducation {
   education: IUserEducation
 }
@@ -14,7 +16,9 @@ function formatDegreeForDisplay(degree: EnumDegrees, major: string) {
   }
 }
 
-function WorkPreview({ education }: IEducation) {
+// Edit logic for edu component
+
+function EducationPreview({ education }: IEducation) {
   return (
     <ul>
       {education.map(e => (
@@ -36,4 +40,4 @@ function WorkPreview({ education }: IEducation) {
   )
 }
 
-export default WorkPreview
+export default EducationPreview
