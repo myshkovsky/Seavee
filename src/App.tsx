@@ -274,7 +274,7 @@ function App() {
           {/* Add education */}
           <Modal
             open={openAddEducation}
-            title="Add work experience"
+            title="Add education"
             onCancel={handleAddEducationCancel}
             footer={[
               <Button key="submit" type="primary" onClick={handleAddEducation}>
