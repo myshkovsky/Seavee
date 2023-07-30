@@ -35,15 +35,11 @@
     justify-content: space-between;
 }
 
-.editor {
-    min-width: 450px;
-}
-
 .display {
     font-family: 'Poppins', sans-serif;
-    float: right;
-    margin-left: auto;
-    width: 210mm;
+    margin: 2.5rem auto;
+    max-width: 210mm;
     height: auto;
-    display: inline;
+    border: 1px solid #969696;
+    padding: .7rem;
 }

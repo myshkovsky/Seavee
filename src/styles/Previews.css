@@ -34,6 +34,10 @@ ul {
     padding: 0;
 }
 
+li {
+    margin: 1rem auto;
+}
+
 /* InfoPreview */
 .info-box-wrapper {
     display: flex;
@@ -60,6 +64,6 @@ ul {
 }
 
 .info-box-description {
-    margin: 0 1rem;
+    margin: 0 1rem 1rem 1rem;
     font-style: italic;
 }
