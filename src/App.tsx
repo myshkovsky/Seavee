@@ -2,13 +2,15 @@ import { useState } from 'react'
 import defaultUser from './utils/defaultUser'
 // import Debug from './components/Debug'
 import './styles/App.css'
-import { Button, Card, Checkbox, ConfigProvider, DatePicker, Form, Input, Select, Space } from 'antd'
-import { EnumDegrees, IUserEducationEntry, IUserWorkExperienceEntry, TEnumDegrees } from './types/IUser'
+import { Button, Checkbox, ConfigProvider, DatePicker, Form, Input, Layout, Modal, Select } from 'antd'
+import { EnumDegrees, IUserBasicInfo, IUserEducationEntry, IUserWorkExperienceEntry, TEnumDegrees } from './types/IUser'
 import {v4 as uuid} from "uuid"
 import DocumentPreview from './components/DocumentPreview'
+import { Content, Header } from 'antd/es/layout/layout'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBriefcase, faGraduationCap, faUser } from '@fortawesome/free-solid-svg-icons'
 
 function App() {
-  const [infoDisable, setInfoDisable] = useState(false)
   const [eduFormChecked, setEduFormChecked] = useState(false)
   const [workFormChecked, setWorkFormChecked] = useState(false)
   const [user, setUser] = useState(defaultUser)
@@ -17,22 +19,16 @@ function App() {
   const [eduForm] = Form.useForm()
   const { RangePicker } = DatePicker
   const { TextArea } = Input
-  
-  function toggleInfoEdit() {
-    setInfoDisable(!infoDisable)
-  }
-
-  function handleInfoChange(targetProp: string, newValue: string) {
-    setUser({...user, info: { ...user.info, [targetProp]: newValue }})
-  }
 
   function handleInfoClear() {
-    setUser({...user, info: {fullname: '', title: '', email: '', phone: '', location: '', description: ''}})
-    /* The setUser above is too slow to keep up with resetFields, and I can't use `await setUsers`,
-    so a setTimeout will have to do. Hopefully 10ms is enough. */
-    setTimeout(() => {
-      infoForm.resetFields()
-    }, 10);
+    infoForm.setFields([
+      { name: ['fullname'], value: '' },
+      { name: ['title'], value: '' },
+      { name: ['email'], value: '' },
+      { name: ['phone'], value: '' },
+      { name: ['location'], value: '' },
+      { name: ['description'], value: '' },
+    ])
   }
 
   function handleEduClear() {
@@ -60,6 +56,10 @@ function App() {
     return newEntry
   }
 
+  function handleInfoSubmit(values: IUserBasicInfo) {
+    setUser({...user, info: { ...user.info, ...values }})
+  }
+
   function handleEduSubmit(rawValues: {school: string, major: string, current: boolean, degree: TEnumDegrees, single?: {"$d": Date}, range?: [{"$d": Date}, {"$d": Date}]}) {
     if (rawValues.single == undefined && rawValues.range == undefined) return
     const degreeKey: TEnumDegrees = rawValues?.degree
@@ -85,14 +85,6 @@ function App() {
       description: rawValues.description,
       started: new Date()
     }
-    if (Array.isArray(rawValues.range)) {
-      newEntry.started = rawValues.range[0]["$d"]
-      newEntry.ended = rawValues.range[1]["$d"]
-      newEntry.current = false
-    } else {
-      newEntry.started = rawValues.single?.$d as Date
-      newEntry.current = true
-    }
     setUser({...user, work: [...user.work, handleDateRange(newEntry, rawValues)]})
   }
 
@@ -114,18 +106,108 @@ function App() {
 
   const ruleMustFill = [{required: true, message: "This field must be filled."}]
 
+  // info modal section
+  const [openEditInfoModal, setOpenEditInfoModal] = useState(false);
+
+  function showInfoModal() {
+    setOpenEditInfoModal(true);
+  }
+
+  function handleInfoModalSave() {
+    infoForm.submit()
+    setOpenEditInfoModal(false)
+  }
+
+  function handleInfoModalCancel() {
+    setOpenEditInfoModal(false)
+    infoForm.resetFields()
+  }
+
+  // work modal section
+  const [openAddWorkExperience, setOpenAddWorkExperience] = useState(false)
+
+  function showAddWorkExperienceModal() {
+    setOpenAddWorkExperience(true)
+  }
+
+  function handleAddWorkExperienceCancel() {
+    setOpenAddWorkExperience(false)
+    handleWorkClear()
+  }
+
+  function handleAddWorkExperience() {
+    workForm.submit()
+    setTimeout(() => {
+      handleAddWorkExperienceCancel()
+    }, 100);
+  }
+
+  // education modal section
+  const [openAddEducation, setOpenAddEducation] = useState(false)
+
+  function showAddEducationModal() {
+    setOpenAddEducation(true)
+  }
+
+  function handleAddEducationCancel() {
+    setOpenAddEducation(false)
+    handleEduClear()
+  }
+
+  function handleAddEducation() {
+    eduForm.submit()
+    setTimeout(() => {
+      handleAddEducationCancel()
+    }, 100);
+  }
+
   return (
-    <ConfigProvider theme={theme}>
-      <section className='main-wrapper'>
-        <section className='editor'>
-          {/* <Debug user={user}/> */}
-          <Card title="Information">
-            <Form form={infoForm} labelCol={{ span: 5 }} layout='horizontal' disabled={infoDisable}>
+    <Layout hasSider={false}>
+      <ConfigProvider theme={theme}>
+        <Header
+          style={{
+            position: 'sticky',
+            top: 0,
+            zIndex: 1,
+            width: '100%',
+            gap: 10,
+            textAlign: 'center',
+            background: "#191919"
+          }}
+        >
+          <Button type="primary" shape="circle" size='large' onClick={showInfoModal}>
+            <FontAwesomeIcon icon={faUser} />
+          </Button>
+          &nbsp;
+          <Button type="primary" shape="circle" size='large' onClick={showAddWorkExperienceModal}>
+            <FontAwesomeIcon icon={faBriefcase} />
+          </Button>
+          &nbsp;
+          <Button type="primary" shape="circle" size='large' onClick={showAddEducationModal}>
+            <FontAwesomeIcon icon={faGraduationCap} />
+          </Button>
+        </Header>
+        <Content style={{ height: '90vh' }}>
+          {/* Edit info */}
+          <Modal
+            open={openEditInfoModal}
+            title="Edit information"
+            onCancel={handleInfoModalCancel}
+            footer={[
+              <Button key="submit" type="primary" onClick={handleInfoModalSave}>
+                Save
+              </Button>,
+              <Button onClick={handleInfoClear}>
+                Clear
+              </Button>
+            ]}
+          >
+            <Form form={infoForm} labelCol={{ span: 5 }} layout='horizontal' onFinish={handleInfoSubmit}>
               <Form.Item name='fullname' label='Full name:' initialValue={user.info.fullname} rules={ruleMustFill}>
-                <Input onChange={e => handleInfoChange('fullname', e.target.value)}/>
+                <Input placeholder='John Doe'/>
               </Form.Item>
               <Form.Item name='title' label='Title:' initialValue={user.info.title}>
-                <Input onChange={e => handleInfoChange('title', e.target.value)}/>
+                <Input placeholder='Software Engineer'/>
               </Form.Item>
               <Form.Item name="email" label="E-mail:" initialValue={user.info.email}
                 rules={[
@@ -133,30 +215,33 @@ function App() {
                   { required: true, message: 'You must enter a valid e-mail address.' }
                 ]}
               >
-                <Input onChange={e => handleInfoChange('email', e.target.value)}/>
+                <Input placeholder='JohnDoe@jdsoftworks.com'/>
               </Form.Item>
               <Form.Item name="phone" label='Phone:' initialValue={user.info.phone} rules={ruleMustFill}>
-                <Input onChange={e => handleInfoChange('phone', e.target.value)}/>
+                <Input placeholder='+1 234-456-7890'/>
               </Form.Item>
               <Form.Item name="location" label='Location:' initialValue={user.info.location}>
-                <Input onChange={e => handleInfoChange('location', e.target.value)}/>
+                <Input placeholder='Warsaw, Ohio, USA'/>
               </Form.Item>
               <Form.Item name="description" label="Description:" initialValue={user.info.description}>
-                <TextArea onChange={e => handleInfoChange('description', e.target.value)}/>
-              </Form.Item>
-              <Form.Item style={{ textAlign: 'center' }}>
-                <Space>
-                  <Button type='primary' disabled={false} onClick={toggleInfoEdit}>
-                    {infoDisable ? 'Edit' : 'Save'}
-                  </Button>
-                  <Button disabled={false} onClick={handleInfoClear}>
-                    Clear
-                  </Button>
-                </Space>
+                <TextArea placeholder='Briefly describe who you are and what you do.'/>
               </Form.Item>
             </Form>
-          </Card>
-          <Card title="Work Experience">
+          </Modal>
+          {/* Add work experience */}
+          <Modal
+            open={openAddWorkExperience}
+            title="Add work experience"
+            onCancel={handleAddWorkExperienceCancel}
+            footer={[
+              <Button key="submit" type="primary" onClick={handleAddWorkExperience}>
+                Add
+              </Button>,
+              <Button onClick={handleAddWorkExperienceCancel}>
+                Cancel
+              </Button>
+            ]}
+          >
             <Form
               labelCol={{ span: 5 }}
               layout='horizontal'
@@ -184,19 +269,22 @@ function App() {
               <Form.Item name="description" label="Description:">
                 <TextArea placeholder="- Managing a CI/CD pipeline&#13;- Optimizing 'Hello World' for blazingly fast performance"/>
               </Form.Item>
-              <Form.Item style={{ textAlign: 'center' }}>
-                <Space>
-                  <Button type="primary" htmlType="submit">
-                    Add
-                  </Button>
-                  <Button type="default" onClick={handleWorkClear}>
-                    Clear
-                  </Button>
-                </Space>
-              </Form.Item>
             </Form>
-          </Card>
-          <Card title="Education">
+          </Modal>
+          {/* Add education */}
+          <Modal
+            open={openAddEducation}
+            title="Add work experience"
+            onCancel={handleAddEducationCancel}
+            footer={[
+              <Button key="submit" type="primary" onClick={handleAddEducation}>
+                Add
+              </Button>,
+              <Button onClick={handleAddEducationCancel}>
+                Cancel
+              </Button>
+            ]}
+          >
             <Form
               labelCol={{ span: 5 }}
               layout='horizontal'
@@ -230,22 +318,12 @@ function App() {
                   <RangePicker picker='month' />
                 </Form.Item>
               }
-              <Form.Item style={{ textAlign: 'center' }}>
-                <Space>
-                  <Button type="primary" htmlType="submit">
-                    Add
-                  </Button>
-                  <Button type="default" onClick={handleEduClear}>
-                    Clear
-                  </Button>
-                </Space>
-              </Form.Item>
             </Form>
-          </Card>
-        </section>
-        <DocumentPreview user={user} />
-      </section>
-    </ConfigProvider>
+          </Modal>
+          <DocumentPreview user={user} />
+        </Content>
+      </ConfigProvider>
+    </Layout>
   )
 }
 

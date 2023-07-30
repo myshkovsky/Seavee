@@ -1,4 +1,3 @@
-import { Space } from "antd"
 import { IUser } from "../types/IUser"
 import WorkPreview from "./WorkPreview"
 import EducationPreview from "./EducationPreview"
@@ -10,15 +9,15 @@ interface IProps {
 
 function DocumentPreview({ user }: IProps) {
   return (
-    <Space className="display">
-      <div>
+    <section>
+      <div className="display">
         <InfoPreview info={user.info} />
-        <hr />
+        <hr style={{ margin: '0 1rem' }} />
         <WorkPreview work={user.work}/>
-        <hr />
+        <hr style={{ color: '#e8e8e8', margin: '0 1rem' }} />
         <EducationPreview education={user.education} />
       </div>
-    </Space>
+    </section>
   )
 }
 
