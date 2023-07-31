@@ -1,5 +1,6 @@
 import { IUser } from "../types/IUser";
 
+// deprecated
 function Debug(props: { user: IUser }) {
   return (
     <>

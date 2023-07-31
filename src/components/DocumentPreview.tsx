@@ -1,7 +1,7 @@
 import { IUser } from "../types/IUser"
-import WorkPreview from "./WorkPreview"
-import EducationPreview from "./EducationPreview"
-import InfoPreview from "./InfoPreview"
+import WorkPreview from "./DocumentPreview/WorkPreview"
+import EducationPreview from "./DocumentPreview/EducationPreview"
+import InfoPreview from "./DocumentPreview/InfoPreview"
 
 interface IProps {
   user: IUser

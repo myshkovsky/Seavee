@@ -1,7 +1,7 @@
-import { IUserWorkExperience } from "../types/IUser";
-import dateToString from "../utils/dateToString";
+import { IUserWorkExperience } from "../../types/IUser";
+import dateToString from "../../utils/dateToString";
 import { purple } from '@ant-design/colors'
-import '../styles/Previews.css'
+import '../../styles/Previews.css'
 
 interface IWork {
   work: IUserWorkExperience
