@@ -1,56 +1,20 @@
-import { EnumDegrees, IUserEducation } from "../../types/IUser";
-import dateToString from "../../utils/dateToString";
-import { purple } from "@ant-design/colors"
+import { IUserEducation } from "../../types/IUser";
 import sortByStartDateDescending from "../../utils/sortByStartDateDescending";
 import '../../styles/Previews.css'
+import ListItem from "./EducationPreview/ListItem";
 
 interface IEducation {
   education: IUserEducation
 }
 
-function formatDegreeForDisplay(degree: EnumDegrees, major: string) {
-  switch(degree) {
-    case "No degree":
-      return major
-    default:
-      return `${degree} in ${major}`
-  }
-}
-
-// Edit logic for edu component
-
 function EducationPreview({ education }: IEducation) {
   return (
     <ul>
       {education.filter(e => { return e.current }).sort(sortByStartDateDescending).map(e => (
-        <li key={e.uuid} className="list-grid">
-          <div className="timespan">
-            {dateToString(e.started)} - {e.ended ? dateToString(e.ended) : "Current"}
-          </div>
-          <div>
-            <h2 className="title">
-              {formatDegreeForDisplay(e.degree, e.major)}
-            </h2>
-            <h3 className="subtitle" style={{ color: purple[6] }}>
-              {e.school}
-            </h3>
-          </div>
-        </li>
+        <ListItem entry={e} />
       ))}
       {education.filter(e => { return !e.current }).sort(sortByStartDateDescending).map(e => (
-        <li key={e.uuid} className="list-grid">
-          <div className="timespan">
-            {dateToString(e.started)} - {e.ended ? dateToString(e.ended) : "Current"}
-          </div>
-          <div>
-            <h2 className="title">
-              {formatDegreeForDisplay(e.degree, e.major)}
-            </h2>
-            <h3 className="subtitle" style={{ color: purple[6] }}>
-              {e.school}
-            </h3>
-          </div>
-        </li>
+        <ListItem entry={e} />
       ))}
     </ul>
   )

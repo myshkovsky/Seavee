@@ -1,8 +1,7 @@
-import { IUserWorkExperience } from "../../types/IUser";
-import dateToString from "../../utils/dateToString";
-import { purple } from '@ant-design/colors'
 import '../../styles/Previews.css'
+import { IUserWorkExperience } from '../../types/IUser';
 import sortByStartDateDescending from "../../utils/sortByStartDateDescending";
+import ListItem from './WorkPreview/ListItem';
 
 interface IWork {
   work: IUserWorkExperience
@@ -12,40 +11,10 @@ function WorkPreview({ work }: IWork) {
   return (
     <ul>
       {work.filter(e => { return e.current }).sort(sortByStartDateDescending).map(e => (
-        <li key={e.uuid} className="list-grid">
-          <div className="timespan">
-            {dateToString(e.started)} - {e.ended ? dateToString(e.ended) : "Current"}
-          </div>
-          <div>
-            <h2 className="title">
-              {e.title}
-            </h2>
-            <h3 className="subtitle" style={{ color: purple[6] }}>
-              {e.company}
-            </h3>
-          </div>
-          <div className="description">
-            {e.description}
-          </div>
-        </li>
+        <ListItem entry={e}/>
       ))}
       {work.filter(e => { return !e.current }).sort(sortByStartDateDescending).map(e => (
-        <li key={e.uuid} className="list-grid">
-          <div className="timespan">
-            {dateToString(e.started)} - {e.ended ? dateToString(e.ended) : "Current"}
-          </div>
-          <div>
-            <h2 className="title">
-              {e.title}
-            </h2>
-            <h3 className="subtitle" style={{ color: purple[6] }}>
-              {e.company}
-            </h3>
-          </div>
-          <div className="description">
-            {e.description}
-          </div>
-        </li>
+        <ListItem entry={e}/>
       ))}
     </ul>
   )
