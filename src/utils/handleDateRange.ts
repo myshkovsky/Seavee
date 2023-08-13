@@ -10,6 +10,5 @@ export function handleDateRange(entry, rawValues) {
     newEntry.started = rawValues.single?.$d as Date
     newEntry.current = true
   }
-  console.log(newEntry)
   return newEntry
 }
