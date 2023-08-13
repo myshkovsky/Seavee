@@ -11,10 +11,10 @@ function WorkPreview({ work }: IWork) {
   return (
     <ul>
       {work.filter(e => { return e.current }).sort(sortByStartDateDescending).map(e => (
-        <ListItem entry={e}/>
+        <ListItem entry={e} key={e.uuid}/>
       ))}
       {work.filter(e => { return !e.current }).sort(sortByStartDateDescending).map(e => (
-        <ListItem entry={e}/>
+        <ListItem entry={e} key={e.uuid}/>
       ))}
     </ul>
   )
