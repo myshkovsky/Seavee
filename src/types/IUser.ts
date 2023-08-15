@@ -6,8 +6,17 @@ export enum EnumDegrees {
   doctorate = "Doctorate"
 }
 
+export enum EnumDegreesMirror {
+  "No degree" = 'none',
+  "Associate" = 'associate',
+  "Bachelor's" = 'bachelors',
+  "Master's" = 'masters',
+  "Doctorate" = 'doctorate'
+}
+
 export type TEnumDegrees = "none"|"associate"|"bachelors"|"masters"|"doctorate"
 
+export type TEnumDegreesMirror = "No degree"|"Associate"|"Bachelor's"|"Master's"|"Doctorate"
 
 export interface IUserEducationEntry {
   uuid: string,

@@ -1,7 +1,14 @@
+import { IAction } from "../types/IAction"
+import { IUserEducationEntry, IUserWorkExperienceEntry } from "../types/IUser"
+
 // eslint-disable-next-line
-//@ts-ignore
-export function reducer(state, action: {type: string, payload?: unknown}) {
+export function reducer(state: any, action: IAction) {
   switch(action.type) {
+    case 'toggleEditMode':
+      return {
+        ...state,
+        editMode: action.payload
+      }
     case 'showInfoModal':
       return {
         ...state,
@@ -12,25 +19,27 @@ export function reducer(state, action: {type: string, payload?: unknown}) {
         ...state,
         showInfoModal: false
       }
-    case 'showAddWorkModal':
+    case 'showWorkModal':
       return {
         ...state,
-        showAddWorkModal: true
+        showWorkModal: true
       }
     case 'hideAddWorkModal':
       return {
         ...state,
-        showAddWorkModal: false
+        showWorkModal: false,
+        isEdit: false
       }
-    case 'showAddEduModal':
+    case 'showEduModal':
       return {
         ...state,
-        showAddEduModal: true
+        showEduModal: true
       }
     case 'hideAddEduModal':
       return {
         ...state,
-        showAddEduModal: false
+        showEduModal: false,
+        isEdit: false
       }
     case 'updateUser':
       return {
@@ -51,6 +60,41 @@ export function reducer(state, action: {type: string, payload?: unknown}) {
           ]
         }
       }
+    case 'updateWorkEntry': {
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          work: [
+            ...state.user.work.filter((v: IUserWorkExperienceEntry) => {
+              const p = action.payload as IUserEducationEntry
+              return v.uuid != p.uuid
+            }),
+            action.payload
+          ]
+        },
+        isEdit: false
+      }
+    }
+    case 'removeWorkEntry': {
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          work: [
+            ...state.user.work.filter((v: IUserWorkExperienceEntry) => v.uuid != action.payload)
+          ]
+        }
+      }
+    }
+    case 'editWorkEntry': {
+      return {
+        ...state,
+        oldEntry: action.payload,
+        editMode: true,
+        showWorkModal: true
+      }
+    }
     case 'addEduEntry':
       return {
         ...state,
@@ -62,6 +106,46 @@ export function reducer(state, action: {type: string, payload?: unknown}) {
           ]
         }
       }
+    case 'updateEduEntry': {
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          education: [
+            ...state.user.education.filter((v: IUserEducationEntry) => {
+              const p = action.payload as IUserEducationEntry
+              return v.uuid != p.uuid
+            }),
+            action.payload
+          ]
+        }
+      }
+    }
+    case 'removeEduEntry': {
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          education: [
+            ...state.user.education.filter((v: IUserEducationEntry) => v.uuid != action.payload)
+          ]
+        }
+      }
+    }
+    case 'editEduEntry': {
+      return {
+        ...state,
+        oldEntry: action.payload,
+        editMode: true,
+        showEduModal: true
+      }
+    }
+    case 'clearEdit': {
+      return {
+        ...state,
+        oldEntry: undefined
+      }
+    }
     default:
       console.error('ERROR: Invalid or missing reducer case.', action)
   }

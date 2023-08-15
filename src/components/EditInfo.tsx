@@ -1,19 +1,20 @@
 import { Button, Form, Input, Modal } from "antd";
 import { Rule } from "antd/es/form";
 import { IUserBasicInfo } from "../types/IUser";
-import { Dispatch } from "react";
+import { useContext } from "react";
+import { StateContext } from "../App";
 const { TextArea } = Input
 
 interface IProps {
   info: IUserBasicInfo,
   rules: Rule[],
   isVisible: boolean,
-  dispatch: Dispatch<{type: string, payload?: unknown}>
 }
 
-function EditInfo({info, rules, isVisible, dispatch}: IProps) {
+function EditInfo({info, rules, isVisible}: IProps) {
   const [infoForm] = Form.useForm()
-  
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_, dispatch] = useContext(StateContext)
   function handleFormClear() {
     infoForm.setFields([
       { name: ['fullname'], value: '' },

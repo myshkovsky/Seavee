@@ -2,12 +2,13 @@ import { IUserEducationEntry } from "../../../types/IUser"
 import dateToString from "../../../utils/dateToString"
 import formatDegreeForDisplay from "../../../utils/formatDegreeForDisplay"
 import { purple } from '@ant-design/colors'
+import EditModeButtons from "../EditModeButtons"
 
-interface IEntry {
+interface IProps {
   entry: IUserEducationEntry
 }
 
-function ListItem({ entry }: IEntry) {
+function ListItem({ entry }: IProps) {
   return (
     <li key={entry.uuid} className="list-grid">
       <div className="timespan">
@@ -15,7 +16,8 @@ function ListItem({ entry }: IEntry) {
       </div>
       <div>
         <h2 className="title">
-          {formatDegreeForDisplay(entry.degree, entry.major)}
+          {formatDegreeForDisplay(entry.degree, entry.major)}&nbsp;
+          <EditModeButtons entry={entry} type={"Edu"} />
         </h2>
         <h3 className="subtitle" style={{ color: purple[6] }}>
           {entry.school}

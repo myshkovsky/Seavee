@@ -1,15 +1,16 @@
 import { Button, Checkbox, DatePicker, Form, Input, Modal, Select } from "antd";
 import { Rule } from "antd/es/form";
-import { Dispatch, useState } from "react";
-import { EnumDegrees, IUserEducationEntry, TEnumDegrees } from "../types/IUser";
+import { useContext, useEffect, useState } from "react";
+import { EnumDegrees, EnumDegreesMirror, IUserEducationEntry, TEnumDegrees, TEnumDegreesMirror } from "../types/IUser";
 import { handleDateRange } from "../utils/handleDateRange";
 import { v4 as uuid } from "uuid"
+import { StateContext } from "../App";
 const { RangePicker } = DatePicker
+import dayjs from 'dayjs'
 
 interface IProps {
   rules: Rule[],
   isVisible: boolean,
-  dispatch: Dispatch<{type: string, payload?: unknown}>
 }
 
 interface IFormProps {
@@ -21,19 +22,48 @@ interface IFormProps {
   range?: [{"$d": Date}, {"$d": Date}]
 }
 
-function AddEducation({rules, isVisible, dispatch}: IProps) {
+function AddEducation({rules, isVisible}: IProps) {
   const [eduForm] = Form.useForm()
-  const [checkbox, setCheckbox] = useState(false)
+  const [state, dispatch] = useContext(StateContext)
+  const [checkbox, setCheckbox] = useState(state.oldEntry?.current || false)
+
+  useEffect(() => {
+    setCheckbox(state.oldEntry?.current ? true : false)
+    const degreeKey: TEnumDegreesMirror = state.oldEntry?.degree
+    if (state.oldEntry === undefined) return
+    eduForm.setFieldsValue({
+      school: state.oldEntry?.school,
+      major: state.oldEntry?.major,
+      degree: EnumDegreesMirror[degreeKey],
+      current: state.oldEntry?.current,
+    })
+    if (state.oldEntry?.current) {
+      eduForm.setFieldsValue({
+        single: dayjs(state.oldEntry.started)
+      })
+    } else {
+      eduForm.setFieldsValue({
+        range: [
+          dayjs(state.oldEntry.started),
+          dayjs(state.oldEntry.ended)
+        ]
+      })
+    }
+  }, [state.oldEntry, eduForm])
 
   function handleCancel() {
+    eduForm.resetFields()
     dispatch({type: 'hideAddEduModal'})
+    dispatch({type: 'clearEdit'})
+    setCheckbox(false)
   }
 
-  function handleAddEntry() {
+  function handleEntrySubmit() {
     eduForm.submit()
     setTimeout(() => {
       setCheckbox(false)
       eduForm.resetFields()
+      dispatch({type: 'clearEdit'})
     }, 100)
     dispatch({type: 'hideAddEduModal'})
   }
@@ -45,30 +75,47 @@ function AddEducation({rules, isVisible, dispatch}: IProps) {
   function handleFormSubmit(rawValues: IFormProps) {
     if (rawValues.single == undefined && rawValues.range == undefined) return
     const degreeKey: TEnumDegrees = rawValues?.degree
-    const newEntry: IUserEducationEntry = {
-      uuid: uuid(),
-      school: rawValues.school as string,
-      major: rawValues.major as string,
-      degree: EnumDegrees[degreeKey],
-      current: rawValues.current,
-      started: new Date()
+    if (!state.editMode) {
+      const newEntry: IUserEducationEntry = {
+        uuid: uuid(),
+        school: rawValues.school as string,
+        major: rawValues.major as string,
+        degree: EnumDegrees[degreeKey],
+        current: rawValues.current,
+        started: new Date()
+      }
+      dispatch({
+        type: 'addEduEntry',
+        payload: handleDateRange(newEntry, rawValues) as IUserEducationEntry
+      })
+    } else if (state.editMode && state.oldEntry) {
+      const updatedEntry: IUserEducationEntry = {
+        uuid: state.oldEntry?.uuid,
+        school: rawValues.school as string,
+        major: rawValues.major as string,
+        degree: EnumDegrees[degreeKey],
+        current: rawValues.current,
+        started: new Date()
+      }
+      dispatch({
+        type: 'updateEduEntry',
+        payload: handleDateRange(updatedEntry, rawValues) as IUserEducationEntry
+      })
+    } else {
+      throw new Error("ERROR: Failed to fetch oldEntry value for edit. Refresh the page and try again. If the error persists, contact the maintainer.")
     }
-    dispatch({
-      type: 'addEduEntry',
-      payload: handleDateRange(newEntry, rawValues) as IUserEducationEntry
-    })
   }
   
   return (
     <Modal
       open={isVisible}
-      title="Add education"
+      title={state.editMode ? "Edit education" : "Add education"}
       onCancel={handleCancel}
       footer={[
-        <Button key="submit" type="primary" onClick={handleAddEntry}>
-          Add
+        <Button key="submit" type="primary" onClick={handleEntrySubmit}>
+          {state.editMode ? "Save" : "Add"}
         </Button>,
-        <Button onClick={handleCancel}>
+        <Button key="cancel" onClick={handleCancel}>
           Cancel
         </Button>
       ]}

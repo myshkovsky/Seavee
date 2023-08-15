@@ -1,12 +1,13 @@
 import { IUserWorkExperienceEntry } from "../../../types/IUser";
 import dateToString from "../../../utils/dateToString";
 import { purple } from '@ant-design/colors'
+import EditModeButtons from "../EditModeButtons";
 
-interface IEntry {
+interface IProps {
   entry: IUserWorkExperienceEntry
 }
 
-function ListItem({ entry }: IEntry) {
+function ListItem({ entry }: IProps) {
   return (
     <li key={entry.uuid} className="list-grid">
       <div className="timespan">
@@ -15,6 +16,8 @@ function ListItem({ entry }: IEntry) {
       <div>
         <h2 className="title">
           {entry.title}
+          &nbsp;
+          <EditModeButtons entry={entry} type={"Work"} />
         </h2>
         <h3 className="subtitle" style={{ color: purple[6] }}>
           {entry.company}

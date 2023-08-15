@@ -41,5 +41,6 @@
     max-width: 210mm;
     height: auto;
     border: 1px solid #969696;
+    background-color: hsl(0, 0%, 100%);
     padding: .7rem;
 }

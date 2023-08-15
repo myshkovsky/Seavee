@@ -1,16 +1,17 @@
 import { Button, Checkbox, DatePicker, Form, Input, Modal } from "antd";
 import { IUserWorkExperienceEntry } from "../types/IUser";
 import { Rule } from "antd/es/form";
-import { Dispatch, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { handleDateRange } from "../utils/handleDateRange";
 import {v4 as uuid} from "uuid"
+import { StateContext } from "../App";
 const { RangePicker } = DatePicker
 const { TextArea } = Input
+import dayjs from 'dayjs'
 
 interface IProps {
   rules: Rule[],
-  isVisible: boolean,
-  dispatch: Dispatch<{type: string, payload?: unknown}>
+  isVisible: boolean
 }
 
 interface IFormProps {
@@ -22,19 +23,47 @@ interface IFormProps {
   range?: [{"$d": Date}, {"$d": Date}]
 }
 
-function AddWork({rules, isVisible, dispatch}: IProps) {
+function AddWork({ rules, isVisible }: IProps) {
   const [workForm] = Form.useForm()
-  const [checkbox, setCheckbox] = useState(false)
+  const [state, dispatch] = useContext(StateContext)
+  const [checkbox, setCheckbox] = useState(state.oldEntry?.current || false)
+
+  useEffect(() => {
+    setCheckbox(state.oldEntry?.current ? true : false)
+    if (state.oldEntry === undefined) return
+    workForm.setFieldsValue({
+      title: state.oldEntry?.title,
+      company: state.oldEntry?.company,
+      description: state.oldEntry?.description,
+      current: state.oldEntry?.current
+    })
+    if (state.oldEntry?.current) {
+      workForm.setFieldsValue({
+        single: dayjs(state.oldEntry.started)
+      })
+    } else {
+      workForm.setFieldsValue({
+        range: [
+          dayjs(state.oldEntry.started),
+          dayjs(state.oldEntry.ended)
+        ]
+      })
+    }
+  }, [state.oldEntry, workForm])
 
   function handleCancel() {
+    workForm.resetFields()
     dispatch({type: 'hideAddWorkModal'})
+    dispatch({type: 'clearEdit'})
+    setCheckbox(false)
   }
 
-  function handleAddEntry() {
+  function handleEntrySubmit() {
     workForm.submit()
     setTimeout(() => {
       setCheckbox(false)
       workForm.resetFields()
+      dispatch({type: 'clearEdit'})
     }, 100)
     dispatch({type: 'hideAddWorkModal'})
   }
@@ -44,30 +73,46 @@ function AddWork({rules, isVisible, dispatch}: IProps) {
   }
 
   function handleFormSubmit(rawValues: IFormProps) {
-    console.log('hfs', rawValues)
     if (rawValues.single == undefined && rawValues.range == undefined) return
-    const newEntry: IUserWorkExperienceEntry = {
-      uuid: uuid(),
-      title: rawValues.title as string,
-      company: rawValues.company as string,
-      current: rawValues.current,
-      description: rawValues.description,
-      started: new Date()
+    if (!state.editMode) {
+      const newEntry: IUserWorkExperienceEntry = {
+        uuid: uuid(),
+        title: rawValues.title as string,
+        company: rawValues.company as string,
+        current: rawValues.current,
+        description: rawValues.description,
+        started: new Date()
+      }
+      dispatch({
+        type: 'addWorkEntry',
+        payload: handleDateRange(newEntry, rawValues) as IUserWorkExperienceEntry
+      })
+    } else if (state.editMode && state.oldEntry) {
+      const updatedEntry: IUserWorkExperienceEntry = {
+        uuid: state.oldEntry?.uuid,
+        title: rawValues.title as string,
+        company: rawValues.company as string,
+        current: rawValues.current,
+        description: rawValues.description,
+        started: new Date()
+      }
+      dispatch({
+        type: 'updateWorkEntry',
+        payload: handleDateRange(updatedEntry, rawValues) as IUserWorkExperienceEntry
+      })
+    } else {
+      throw new Error("ERROR: Failed to fetch oldEntry value for edit. Refresh the page and try again. If the error persists, contact the maintainer.")
     }
-    dispatch({
-      type: 'addWorkEntry',
-      payload: handleDateRange(newEntry, rawValues) as IUserWorkExperienceEntry
-    })
   }
 
   return (
     <Modal
       open={isVisible}
-      title="Add work experience"
+      title={state.editMode ? "Edit work experience" : "Add work experience"}
       onCancel={handleCancel}
       footer={[
-        <Button key="submit" type="primary" onClick={handleAddEntry}>
-          Add
+        <Button key="submit" type="primary" onClick={handleEntrySubmit}>
+          {state.editMode ? "Save" : "Add"}
         </Button>,
         <Button key="cancel" onClick={handleCancel}>
           Cancel
