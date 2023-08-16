@@ -44,3 +44,24 @@
     background-color: hsl(0, 0%, 100%);
     padding: .7rem;
 }
+
+.seavee-logo {
+    position: absolute;
+    left: 2rem;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 1.8rem;
+    color: white;
+}
+
+.seavee-credits {
+    position: absolute;
+    top: .4rem;
+    right: 2rem;
+    font-size: 2rem;
+    color: white;
+}
+
+.github-svg {
+    fill: white;
+}

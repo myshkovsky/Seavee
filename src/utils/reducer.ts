@@ -1,5 +1,6 @@
 import { IAction } from "../types/IAction"
 import { IUserEducationEntry, IUserWorkExperienceEntry } from "../types/IUser"
+import { blankUser } from "./blankUser"
 
 // eslint-disable-next-line
 export function reducer(state: any, action: IAction) {
@@ -144,6 +145,14 @@ export function reducer(state: any, action: IAction) {
       return {
         ...state,
         oldEntry: undefined
+      }
+    }
+    case 'clearUser': {
+      return {
+        ...state,
+        editMode: false,
+        oldEntry: undefined,
+        user: blankUser
       }
     }
     default:
